@@ -2,65 +2,81 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreusuariosRequest;
-use App\Http\Requests\UpdateusuariosRequest;
 use App\Models\usuarios;
+use App\Models\playlists;
+use DateInterval;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class UsuariosController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private function verifyLoggedIn($redirect) {
+        if(Session::get('login') == null) {
+            return view($redirect);
+        } else {
+            return redirect('/playlists')->with('error', 'já está logado!');
+        }
+    }
+    public function login()
     {
-        //
+        return $this->verifyLoggedIn('user.login');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function signup()
     {
-        //
+        return $this->verifyLoggedIn('user.signup');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreusuariosRequest $request)
+    public function create_new_usuario(Request $request)
     {
-        //
+        $nome = $request->input('nome');
+        $cpf = $request->input('cpf');
+        $senha = $request->input('senha');
+
+        $usuario = new Usuarios();
+
+        $usuario->nome = $nome;
+        $usuario->cpf = $cpf;
+        $usuario->senha = $senha;
+        $usuario->id_distribuidor = null;
+
+        $playlistCurtidas = new Playlists();
+
+        $playlistCurtidas->nome = "Músicas Curtidas";
+        $playlistCurtidas->descricao = "Músicas curtidas por você";
+        $playlistCurtidas->indicador_privado = true;
+        $playlistCurtidas->duracao_total = DateInterval::createFromDateString('0 seconds')->format('%H:%I:%S');
+
+        $usuario->save();
+
+        $playlistCurtidas->id_usuario = (DB::table('usuarios')->where('nome', $nome)->first())->id;
+
+        $playlistCurtidas->save();
+        return redirect('/login')->with('success','Registered Successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(usuarios $usuarios)
+    public function login_action(Request $request)
     {
-        //
+        $nome = $request->input('nome');
+        $senha = $request->input('senha');
+
+        $usuario = DB::table('usuarios')->where('nome', $nome)->first();
+
+        if ($usuario === null) {
+            return redirect('/login')->with('error', 'Usuário não existe!');
+        } elseif ($usuario->senha !== $senha) {
+            return redirect('/login')->with('error', 'Senha incorreta!');
+        } else {
+            Session::put('login', $usuario->id);
+            return redirect('/playlists');
+        }
+    }
+    public function logout_action()
+    {
+        Session::forget('login');
+        return redirect('/');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(usuarios $usuarios)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateusuariosRequest $request, usuarios $usuarios)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(usuarios $usuarios)
-    {
-        //
-    }
 }

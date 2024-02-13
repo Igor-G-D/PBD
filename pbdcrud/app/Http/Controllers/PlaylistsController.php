@@ -2,65 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreplaylistsRequest;
-use App\Http\Requests\UpdateplaylistsRequest;
+use App\Models\usuarios;
 use App\Models\playlists;
+use DateInterval;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class PlaylistsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public static function show()
     {
-        //
+        $userSession = Session::get('login');
+        if($userSession == null) {
+            return redirect('/');
+        }
+
+        $userPlaylists = DB::table('playlists')->where('id_usuario', $userSession)->get();
+        $likedPlaylists = DB::table('playlists')
+        ->join('curte_playlists', 'playlists.id', '=', 'curte_playlists.id_playlist')
+        ->where('curte_playlists.id_usuario', '=', $userSession)
+        ->select('playlists.*')
+        ->get();
+        return view("playlists.playlistsDashboard", compact('userPlaylists','likedPlaylists'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public static function delete(Request $request)
     {
-        //
+        $playlist_id = $request->playlist;
+        DB::table('playlists')->where('id','=',$playlist_id)->delete();
+        return redirect('/playlists');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreplaylistsRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(playlists $playlists)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(playlists $playlists)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateplaylistsRequest $request, playlists $playlists)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(playlists $playlists)
-    {
-        //
-    }
 }

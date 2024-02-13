@@ -7,5 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class distribuidores extends Model
 {
+    protected $table = 'distribuidores';
+    protected $primaryKey = 'id';
+
+    public $timestamps = false;
+    protected $fillable = [
+        'CNPJ',
+        'Senha',
+        'Nome',
+    ];
     use HasFactory;
 }
