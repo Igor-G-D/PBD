@@ -1,5 +1,5 @@
 <ul id="dropdown1" class="dropdown-content">
-    <li><a href="{{url("/profile")}}">Profile</a></li>
+    <li><a href="{{url("/profile")}}">Seu Perfil</a></li>
     <li class="red lighten-3"><a href="{{url("/logout")}}">Log Out</a></li>
 </ul>
 <nav>

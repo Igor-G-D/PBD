@@ -30,8 +30,47 @@ class PlaylistsController extends Controller
     public static function delete(Request $request)
     {
         $playlist_id = $request->playlist;
-        DB::table('playlists')->where('id','=',$playlist_id)->delete();
+
+        $playlistOwner = DB::table('playlists')->where('id','=',$playlist_id)->first()->id_usuario;
+
+        if(SESSION::get('login') != $playlistOwner) {
+            return redirect('/playlists')->with('error','Você não é o dono desta playlist!');
+        }
+        DB::transaction(function () use ($playlist_id) {
+            DB::table('curte_playlists')->where('id_playlist', '=', $playlist_id)->delete();
+            DB::table('playlist_possui_musicas')->where('id_playlist', '=', $playlist_id)->delete();
+            DB::table('playlists')->where('id', '=', $playlist_id)->delete();
+        });
         return redirect('/playlists');
     }
+
+    public static function unlike(Request $request)
+    {
+        $playlist_id = $request->playlist;
+
+        $session_id = SESSION::get('login');
+
+        DB::table('curte_playlists')
+            ->where('id_playlist','=',$playlist_id)
+            ->where('id_usuario','=', $session_id)
+            ->delete();
+        return redirect('/playlists');
+    }
+
+    public static function details($playlist_id) {
+        $playlist = DB::table('playlists')->where('id', $playlist_id)->first();
+        if($playlist->indicador_privado == true && $playlist->id_usuario != Session::get('login')){
+            return redirect('/playlists')->with('error', 'Playlist privada!');
+        }
+
+        $musicas = DB::table('musicas')
+        ->leftJoin('playlist_possui_musicas', 'musicas.id', '=', 'playlist_possui_musicas.id_musica')
+        ->where('playlist_possui_musicas.id_playlist', '=', $playlist->id)
+        ->select('musicas.*')
+        ->get();
+        return view('playlists.playlistsDetails',compact('playlist', 'musicas'));
+    }
+
+
 
 }

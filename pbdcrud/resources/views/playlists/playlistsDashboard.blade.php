@@ -1,4 +1,3 @@
-<?php use Illuminate\Support\Facades\Session; ?>
 @include('header')
 @include('navbar')
 
@@ -24,11 +23,12 @@
             <tbody>
             @foreach($userPlaylists as $playlist)
                 <tr>
-                    <td>{{ $playlist->nome }}</td>
+                    <td><a href="{{url('/playlists/details/'.$playlist->id)}}">{{ $playlist->nome }}</a></td>
                     <td>{{ DB::table('playlist_possui_musicas')->where('id_playlist','=',$playlist->id)->get()->count()}}</td>
                     <td>{{ $playlist->duracao_total }}</td>
                     <td>{{ DB::table('usuarios')->where('id','=',$playlist->id_usuario)->first()->nome }}</td>
-                    <td class="right">
+                    <td class="right valign-wrapper">
+                        <a href="{{url('/playlists/details/'.$playlist->id.'/edit')}}" class="btn-floating btn-small waves-effect waves-light cyan"><i class="material-icons">create</i></a>
                         <form action="{{ url('/playlists/delete') }}" method="POST">
                             @csrf
                             <input type="hidden" name="playlist" value="{{ $playlist->id }}">
@@ -58,21 +58,23 @@
 
             <tbody>
                 @foreach($likedPlaylists as $playlist)
-                <tr>
-                    <td>{{ $playlist->nome }}</td>
-                    <td>{{ DB::table('playlist_possui_musicas')->where('id_playlist','=',$playlist->id)->get()->count()}}</td>
-                    <td>{{ $playlist->duracao_total }}</td>
-                    <td>{{ DB::table('usuarios')->where('id','=',$playlist->id_usuario)->first()->nome }}</td>
-                    <td class="right">
-                        <form action="{{ url('/playlists/unlike') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="playlist" value="{{ $playlist->id }}">
-                            <button class="btn-floating btn-small red" type="submit">
-                                <i class="material-icons medium red">favorite</i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
+                    @if ($playlist->indicador_privado == false)
+                        <tr>
+                            <td><a href="{{url('/playlists/details/'.$playlist->id)}}">{{ $playlist->nome }}</a></td>
+                            <td>{{ DB::table('playlist_possui_musicas')->where('id_playlist','=',$playlist->id)->get()->count()}}</td>
+                            <td>{{ $playlist->duracao_total }}</td>
+                            <td>{{ DB::table('usuarios')->where('id','=',$playlist->id_usuario)->first()->nome }}</td>
+                            <td class="right">
+                                <form action="{{ url('/playlists/unlike') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="playlist" value="{{ $playlist->id }}">
+                                    <button class="btn-floating btn-small red" type="submit">
+                                        <i class="material-icons medium red">favorite</i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endif
                 @endforeach
             </tbody>
         </table>
