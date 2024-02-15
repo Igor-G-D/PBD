@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('ID_Usuario');
             $table->foreign('ID_Usuario')->references('id')->on('usuarios');
             $table->string('Nome', 100);
-            $table->interval('Duracao_Total'); // Use interval for duration
+            $table->interval(' duracao'); // Use interval for duration
         });
     }
 

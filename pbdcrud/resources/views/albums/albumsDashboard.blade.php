@@ -25,7 +25,7 @@
                 <tr>
                     <td><a href="{{url('/albums/details/'.$album->id)}}">{{ $album->nome }}</a></td>
                     <td>{{ DB::table('musicas')->where('id_album','=',$album->id)->get()->count()}}</td>
-                    <td>{{ $album->duracao_total }}</td>
+                    <td>{{ $album-> duracao }}</td>
                     <td><a href="{{url('/users/details/'.$album->id_usuario)}}">{{ DB::table('usuarios')->where('id','=',$album->id_usuario)->first()->nome }}</a></td>
                     <td class="right valign-wrapper">
                         <a href="{{url('/albums/details/'.$album->id.'/edit')}}" class="btn-floating btn-small waves-effect waves-light cyan"><i class="material-icons">create</i></a>
@@ -61,7 +61,7 @@
                     <tr>
                         <td><a href="{{url('/albums/details/'.$album->id)}}">{{ $album->nome }}</a></td>
                         <td>{{ DB::table('musicas')->where('id_album','=',$album->id)->get()->count()}}</td>
-                        <td>{{ $album->duracao_total }}</td>
+                        <td>{{ $album-> duracao }}</td>
                         <td><a href="{{url('/users/details/'.$album->id_usuario)}}">{{ DB::table('usuarios')->where('id','=',$album->id_usuario)->first()->nome }}</a></td>
                         <td class="right">
                             <form action="{{ url('/albums/unlike') }}" method="POST">

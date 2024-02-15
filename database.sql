@@ -1,7 +1,3 @@
--- DROP DATABASE IF EXISTS PBD_CRUD;
--- CREATE DATABASE PBD_CRUD;
-
-
 CREATE TABLE Distribuidores (
     ID SERIAL PRIMARY KEY,
     CNPJ VARCHAR(14) UNIQUE NOT NULL,
@@ -21,7 +17,7 @@ CREATE TABLE Albums (
     ID SERIAL PRIMARY KEY,
     ID_Usuario INT REFERENCES Usuarios(ID),
     Nome VARCHAR(100) NOT NULL,
-    Duracao_Total INTERVAL NOT NULL
+    Duracao INTERVAL NOT NULL
 );
 
 CREATE TABLE Musicas (
@@ -38,7 +34,7 @@ CREATE TABLE Playlists (
     Nome VARCHAR(100) NOT NULL,
     Descricao TEXT,
     Indicador_Privado BOOLEAN NOT NULL,
-    Duracao_Total INTERVAL NOT NULL
+    Duracao INTERVAL NOT NULL
 );
 
 CREATE TABLE Curte_Musicas (

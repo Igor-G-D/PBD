@@ -26,7 +26,7 @@
     </div>
 </div>
 <ul class="collection">
-    <li class="collection-item">Duração: {{ $album->duracao_total }}</li>
+    <li class="collection-item">Duração: {{ $album-> duracao }}</li>
     <li class="collection-item">Autor: <a href="{{url('/users/details/'.$album->id_usuario)}}">{{ DB::table('usuarios')->where('id', '=', $album->id_usuario)->first()->nome }}</a>
     </li>
 </ul>

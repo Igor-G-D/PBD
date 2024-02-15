@@ -25,7 +25,7 @@
                 <tr>
                     <td><a href="{{url('/playlists/details/'.$playlist->id)}}">{{ $playlist->nome }}</a></td>
                     <td>{{ DB::table('playlist_possui_musicas')->where('id_playlist','=',$playlist->id)->get()->count()}}</td>
-                    <td>{{ $playlist->duracao_total }}</td>
+                    <td>{{ $playlist-> duracao }}</td>
                     <td><a href="{{url('/users/details/'.$playlist->id_usuario)}}">{{ DB::table('usuarios')->where('id','=',$playlist->id_usuario)->first()->nome }}</a></td>
                     <td class="right valign-wrapper">
                         <a href="{{url('/playlists/details/'.$playlist->id.'/edit')}}" class="btn-floating btn-small waves-effect waves-light cyan"><i class="material-icons">create</i></a>
@@ -62,7 +62,7 @@
                         <tr>
                             <td><a href="{{url('/playlists/details/'.$playlist->id)}}">{{ $playlist->nome }}</a></td>
                             <td>{{ DB::table('playlist_possui_musicas')->where('id_playlist','=',$playlist->id)->get()->count()}}</td>
-                            <td>{{ $playlist->duracao_total }}</td>
+                            <td>{{ $playlist-> duracao }}</td>
                             <td><a href="{{url('/users/details/'.$playlist->id_usuario)}}">{{ DB::table('usuarios')->where('id','=',$playlist->id_usuario)->first()->nome }}</a></td>
                             <td class="right">
                                 <form action="{{ url('/playlists/unlike') }}" method="POST">

@@ -48,7 +48,7 @@ class UsuariosController extends Controller
         $playlistCurtidas->nome = "Músicas Curtidas";
         $playlistCurtidas->descricao = "Músicas curtidas por você";
         $playlistCurtidas->indicador_privado = true;
-        $playlistCurtidas->duracao_total = DateInterval::createFromDateString('0 seconds')->format('%H:%I:%S');
+        $playlistCurtidas-> duracao = DateInterval::createFromDateString('0 seconds')->format('%H:%I:%S');
 
         $usuario->save();
 

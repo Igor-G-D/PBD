@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('Nome', 100);
             $table->text('Descricao')->nullable(); // Assuming Descricao can be nullable
             $table->boolean('Indicador_Privado');
-            $table->interval('Duracao_Total');
+            $table->interval(' duracao');
         });
     }
 

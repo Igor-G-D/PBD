@@ -46,28 +46,38 @@
 
         <ul  id='dropdownOrder' class='dropdown-content' style='overflow-x: hidden;'>
             <li>
+                <div class="switch">
+                    <label>
+                        Descending
+                        <input type="checkbox" id="order" name="order" value="asc">
+                        <span class="lever"></span>
+                        Ascending
+                    </label>
+                </div>
+            </li>
+            <li class="divider" tabindex="-1"></li>
+            <li>
                 Ordenar por:
                 <p>
                     <label>
-                        <input name="order" id="nome" value="nome" type="radio" checked/>
+                        <input name="orderby" id="nome" value="nome" type="radio" checked/>
                         <span>Nome</span>
                     </label>
                 </p>
                 <p>
                     <label>
-                        <input name="order" id="nLikes" value="nLikes" type="radio"/>
+                        <input name="orderby" id="nLikes" value="nLikes" type="radio"/>
                         <span>Número de Likes</span>
                     </label>
                 </p>
                 <p>
                     <label>
-                        <input name="order" id="duracao" value="duracao"type="radio"/>
+                        <input name="orderby" id="duracao" value="duracao"type="radio"/>
                         <span>Duração</span>
                     </label>
                 </p>
             </li>
         </ul>
-
     </form>
 </div>
 

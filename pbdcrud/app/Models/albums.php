@@ -14,7 +14,7 @@ class albums extends Model
     protected $fillable = [
         'ID_Usuario',
         'Nome',
-        'Duracao_Total',
+        ' duracao',
     ];
     use HasFactory;
 }

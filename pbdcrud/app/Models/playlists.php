@@ -15,7 +15,7 @@ class playlists extends Model
         'Nome',
         'Descricao',
         'Indicador_Privado',
-        'Duracao_Total',
+        ' duracao',
     ];
     use HasFactory;
 }
