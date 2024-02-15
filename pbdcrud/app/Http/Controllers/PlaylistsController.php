@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\usuarios;
 use App\Models\playlists;
+use App\Models\curte_playlists;
 use DateInterval;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
@@ -46,7 +47,7 @@ class PlaylistsController extends Controller
 
     public static function unlike(Request $request)
     {
-        $playlist_id = $request->playlist;
+        $playlist_id = $request->id;
 
         $session_id = SESSION::get('login');
 
@@ -54,7 +55,18 @@ class PlaylistsController extends Controller
             ->where('id_playlist','=',$playlist_id)
             ->where('id_usuario','=', $session_id)
             ->delete();
-        return redirect('/playlists');
+    }
+
+    public static function like(Request $request)
+    {
+
+        $id_playlist = $request->id;
+        $id_usuario = Session::get('login');
+
+        DB::table('curte_playlists')->insert([
+            'id_usuario' => $id_usuario,
+            'id_playlist' => $id_playlist,
+        ]);
     }
 
     public static function details($playlist_id) {

@@ -34,7 +34,7 @@ class BuscaController extends Controller
         }
 
         $duracaoInterval = DB::raw("make_interval(mins => $duracao)");
-        $searchResults = DB::table($type)->where('duracao', '<', $duracaoInterval);
+        $searchResults = DB::table($type)->where('duracao', '<=', $duracaoInterval);
 
         if($nome != '') {
             $searchResults->where('nome', 'like', '%' . $nome . '%');

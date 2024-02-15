@@ -29,6 +29,7 @@
     <li class="collection-item">Duração: {{ $playlist-> duracao }}</li>
     <li class="collection-item">Descrição: {{ $playlist->descricao }}</li>
     <li class="collection-item">Dono: <a href="{{url('/users/details/'.$playlist->id_usuario)}}">{{ DB::table('usuarios')->where('id', '=', $playlist->id_usuario)->first()->nome }}</a></li>
+    <li class="collection-item">Número de likes: {{DB::table('curte_playlists')->where('curte_playlists.id_playlist', '=', $playlist->id)->get()->count()}}</li>
 </ul>
 <table>
     <thead>
@@ -38,32 +39,47 @@
             <th>Genero</th>
             <th>Duração</th>
             <th>Autores</th>
-            <th></th>
+            <th>Número de Likes</th>
         </tr>
     </thead>
     <tbody>
         @foreach ($musicas as $musica)
-        <tr>
-            <td>{{$musica->nome}}</td>
-            <td>{{$musica->genero}}</td>
-            <td>{{$musica->duracao}}</td>
-            <td>
-                <?php
-                    $autores = DB::table('usuarios')
-                        ->leftjoin('tem_autoria', 'usuarios.id','=', 'tem_autoria.id_usuario')
-                        ->where('id_musica','=',$musica->id)
-                        ->select('usuarios.*')
-                        ->get();
-                    $autoresString = '';
-                    foreach ($autores as $autor) {
-                        $autores = '<a href="'.url('/users/details/'.$autor->id).'">'.$autor->nome.'</a>, ';
-                        $autoresString .= $autores;
-                    }
-                    $autoresString = substr($autoresString, 0, -2);
-                    echo $autoresString
-                ?>
-            </td>
-        </tr>
+            <tr>
+                <td>{{$musica->nome}}</td>
+                <td>{{$musica->genero}}</td>
+                <td>{{$musica->duracao}}</td>
+                <td>
+                    <?php
+                        $autores = DB::table('usuarios')
+                            ->leftjoin('tem_autoria', 'usuarios.id','=', 'tem_autoria.id_usuario')
+                            ->where('id_musica','=',$musica->id)
+                            ->select('usuarios.*')
+                            ->get();
+                        $autoresString = '';
+                        foreach ($autores as $autor) {
+                            $autores = '<a href="'.url('/users/details/'.$autor->id).'">'.$autor->nome.'</a>, ';
+                            $autoresString .= $autores;
+                        }
+                        $autoresString = substr($autoresString, 0, -2);
+                        echo $autoresString
+                    ?>
+                </td>
+                <td>{{DB::table('curte_musicas')->where('curte_musicas.id_musica', '=', $musica->id)->get()->count()}}</td>
+                <td class="right">
+                    <a class="btn-floating btn-small waves-effect waves-light red favorite-button" data-number="{{$musica->id}}" data-type="musicas">
+                        <i class="material-icons">
+                            <?php
+                                $liked = DB::table('curte_musicas')->where('id_usuario','=',Session::get('login'))->where('id_musica','=',$musica->id)->count();
+                                if($liked == 0) {
+                                    echo "favorite_border";
+                                } else {
+                                    echo "favorite";
+                                }
+                            ?>
+                        </i>
+                    </a>
+                </td>
+            </tr>
         @endforeach
     </tbody>
 </table>

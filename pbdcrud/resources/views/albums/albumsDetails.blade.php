@@ -29,6 +29,7 @@
     <li class="collection-item">Duração: {{ $album-> duracao }}</li>
     <li class="collection-item">Autor: <a href="{{url('/users/details/'.$album->id_usuario)}}">{{ DB::table('usuarios')->where('id', '=', $album->id_usuario)->first()->nome }}</a>
     </li>
+    <li class="collection-item">Número de likes: {{DB::table('curte_albums')->where('curte_albums.id_album', '=', $album->id)->get()->count()}}</li>
 </ul>
 <table>
     <thead>
@@ -38,7 +39,7 @@
             <th>Genero</th>
             <th>Duração</th>
             <th>Autores</th>
-            <th></th>
+            <th>Número de Likes</th>
         </tr>
     </thead>
     <tbody>
@@ -62,6 +63,21 @@
                     $autoresString = substr($autoresString, 0, -2);
                     echo $autoresString
                 ?>
+            </td>
+            <td>{{DB::table('curte_musicas')->where('curte_musicas.id_musica', '=', $musica->id)->get()->count()}}</td>
+            <td class="right">
+                <a class="btn-floating btn-small waves-effect waves-light red favorite-button" data-number="{{$musica->id}}" data-type="musicas">
+                    <i class="material-icons">
+                        <?php
+                            $liked = DB::table('curte_musicas')->where('id_usuario','=',Session::get('login'))->where('id_musica','=',$musica->id)->count();
+                            if($liked == 0) {
+                                echo "favorite_border";
+                            } else {
+                                echo "favorite";
+                            }
+                        ?>
+                    </i>
+                </a>
             </td>
         </tr>
         @endforeach

@@ -17,6 +17,7 @@
                     <th>Numero de Músicas</th>
                     <th>Duração</th>
                     <th>Autor</th>
+                    <th>Número de Likes</th>
                 </tr>
             </thead>
 
@@ -27,6 +28,7 @@
                     <td>{{ DB::table('musicas')->where('id_album','=',$album->id)->get()->count()}}</td>
                     <td>{{ $album-> duracao }}</td>
                     <td><a href="{{url('/users/details/'.$album->id_usuario)}}">{{ DB::table('usuarios')->where('id','=',$album->id_usuario)->first()->nome }}</a></td>
+                    <td>{{DB::table('curte_albums')->where('curte_albums.id_album', '=', $album->id)->get()->count()}}</td>
                     <td class="right valign-wrapper">
                         <a href="{{url('/albums/details/'.$album->id.'/edit')}}" class="btn-floating btn-small waves-effect waves-light cyan"><i class="material-icons">create</i></a>
                         <form action="{{ url('/albums/delete') }}" method="POST">
@@ -53,6 +55,7 @@
                     <th>Numero de Músicas</th>
                     <th>Duração</th>
                     <th>Autor</th>
+                    <th>Número de Likes</th>
                 </tr>
             </thead>
 
@@ -63,14 +66,20 @@
                         <td>{{ DB::table('musicas')->where('id_album','=',$album->id)->get()->count()}}</td>
                         <td>{{ $album-> duracao }}</td>
                         <td><a href="{{url('/users/details/'.$album->id_usuario)}}">{{ DB::table('usuarios')->where('id','=',$album->id_usuario)->first()->nome }}</a></td>
+                        <td>{{DB::table('curte_albums')->where('curte_albums.id_album', '=', $album->id)->get()->count()}}</td>
                         <td class="right">
-                            <form action="{{ url('/albums/unlike') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="album" value="{{ $album->id }}">
-                                <button class="btn-floating btn-small red" type="submit">
-                                    <i class="material-icons medium red">favorite</i>
-                                </button>
-                            </form>
+                            <a class="btn-floating btn-small waves-effect waves-light red favorite-button" data-number="{{$album->id}}" data-type="albums">
+                                <i class="material-icons">
+                                    <?php
+                                        $liked = DB::table('curte_albums')->where('id_usuario','=',Session::get('login'))->where('id_album','=',$album->id)->count();
+                                        if($liked == 0) {
+                                            echo "favorite_border";
+                                        } else {
+                                            echo "favorite";
+                                        }
+                                    ?>
+                                </i>
+                            </a>
                         </td>
                     </tr>
                 @endforeach

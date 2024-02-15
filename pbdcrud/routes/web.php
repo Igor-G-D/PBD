@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\AlbumsController;
 use App\Http\Controllers\BuscaController;
+use App\Http\Controllers\MusicasController;
 use App\Policies\UsuariosPolicy;
 use Illuminate\Support\Facades\Session;
 
@@ -37,14 +38,19 @@ Route::post('/users/delete',[UsuariosController::class,'delete'])->name('users.d
 
 Route::get('/playlists', [PlaylistsController::class,'show'])->name('playlists.show');
 Route::post('/playlists/delete',[PlaylistsController::class,'delete'])->name('playlists.delete');
-Route::post('/playlists/unlike',[PlaylistsController::class,'unlike'])->name('playlists.delete');
+Route::post('/playlists/unlike',[PlaylistsController::class,'unlike'])->name('playlists.unlike');
+Route::post('/playlists/like',[PlaylistsController::class,'like'])->name('playlists.like');
 Route::get('/playlists/details/{playlist_id}', [PlaylistsController::class,'details'])->name('playlists.details');
-Route::get('/playlists/details/{playlist_id}/edit', [PlaylistsController::class,'edit'])->name('playlists.details');
+Route::get('/playlists/details/{playlist_id}/edit', [PlaylistsController::class,'edit'])->name('playlists.edit');
 
 Route::get('/albums', [AlbumsController::class,'show'])->name('albums.show');
 Route::post('/albums/delete',[AlbumsController::class,'delete'])->name('albums.delete');
-Route::post('/albums/unlike',[AlbumsController::class,'unlike'])->name('albums.delete');
+Route::post('/albums/unlike',[AlbumsController::class,'unlike'])->name('albums.unlike');
+Route::post('/albums/like',[AlbumsController::class,'like'])->name('albums.like');
 Route::get('/albums/details/{album_id}', [AlbumsController::class,'details'])->name('albums.details');
 Route::get('/albums/details/{album_id}/edit', [AlbumsController::class,'edit'])->name('albums.details');
+
+Route::post('/musicas/unlike',[MusicasController::class,'unlike'])->name('musicas.unlike');
+Route::post('/musicas/like',[MusicasController::class,'like'])->name('musicas.like');
 
 Route::get('/search', [BuscaController::class,'show'])->name('busca.show');

@@ -17,6 +17,7 @@
                     <th>Numero de Músicas</th>
                     <th>Duração</th>
                     <th>Autor</th>
+                    <th>Número de Likes</th>
                 </tr>
             </thead>
 
@@ -27,6 +28,7 @@
                     <td>{{ DB::table('playlist_possui_musicas')->where('id_playlist','=',$playlist->id)->get()->count()}}</td>
                     <td>{{ $playlist-> duracao }}</td>
                     <td><a href="{{url('/users/details/'.$playlist->id_usuario)}}">{{ DB::table('usuarios')->where('id','=',$playlist->id_usuario)->first()->nome }}</a></td>
+                    <td>{{DB::table('curte_playlists')->where('curte_playlists.id_playlist', '=', $playlist->id)->get()->count()}}</td>
                     <td class="right valign-wrapper">
                         <a href="{{url('/playlists/details/'.$playlist->id.'/edit')}}" class="btn-floating btn-small waves-effect waves-light cyan"><i class="material-icons">create</i></a>
                         <form action="{{ url('/playlists/delete') }}" method="POST">
@@ -53,25 +55,32 @@
                     <th>Numero de Músicas</th>
                     <th>Duração</th>
                     <th>Autor</th>
+                    <th>Número de Likes</th>
                 </tr>
             </thead>
 
             <tbody>
                 @foreach($likedPlaylists as $playlist)
-                    @if ($playlist->indicador_privado == false)
+                    @if ($playlist->indicador_privado == false || Session::get('login') == $playlist->id_usuario)
                         <tr>
                             <td><a href="{{url('/playlists/details/'.$playlist->id)}}">{{ $playlist->nome }}</a></td>
                             <td>{{ DB::table('playlist_possui_musicas')->where('id_playlist','=',$playlist->id)->get()->count()}}</td>
                             <td>{{ $playlist-> duracao }}</td>
                             <td><a href="{{url('/users/details/'.$playlist->id_usuario)}}">{{ DB::table('usuarios')->where('id','=',$playlist->id_usuario)->first()->nome }}</a></td>
+                            <td>{{DB::table('curte_playlists')->where('curte_playlists.id_playlist', '=', $playlist->id)->get()->count()}}</td>
                             <td class="right">
-                                <form action="{{ url('/playlists/unlike') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="playlist" value="{{ $playlist->id }}">
-                                    <button class="btn-floating btn-small red" type="submit">
-                                        <i class="material-icons medium red">favorite</i>
-                                    </button>
-                                </form>
+                                <a class="btn-floating btn-small waves-effect waves-light red favorite-button" data-number="{{$playlist->id}}" data-type="playlists">
+                                    <i class="material-icons">
+                                        <?php
+                                            $liked = DB::table('curte_playlists')->where('id_usuario','=',Session::get('login'))->where('id_playlist','=',$playlist->id)->count();
+                                            if($liked == 0) {
+                                                echo "favorite_border";
+                                            } else {
+                                                echo "favorite";
+                                            }
+                                        ?>
+                                    </i>
+                                </a>
                             </td>
                         </tr>
                     @endif

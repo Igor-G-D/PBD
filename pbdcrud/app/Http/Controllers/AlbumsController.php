@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\usuarios;
 use App\Models\albums;
+use App\Models\curte_albums;
 use DateInterval;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
@@ -58,7 +59,7 @@ class AlbumsController extends Controller
 
     public static function unlike(Request $request)
     {
-        $album_id = $request->album;
+        $album_id = $request->id;
 
         $session_id = SESSION::get('login');
 
@@ -66,7 +67,18 @@ class AlbumsController extends Controller
             ->where('id_album','=',$album_id)
             ->where('id_usuario','=', $session_id)
             ->delete();
-        return redirect('/albums');
+    }
+
+    public static function like(Request $request)
+    {
+
+        $id_album = $request->id;
+        $id_usuario = Session::get('login');
+
+        DB::table('curte_albums')->insert([
+            'id_usuario' => $id_usuario,
+            'id_album' => $id_album,
+        ]);
     }
 
     public static function details($album_id) {
