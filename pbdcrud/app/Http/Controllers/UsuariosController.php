@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\usuarios;
 use App\Models\playlists;
+use App\Http\Controllers\AlbumsController;
+use App\Http\Controllers\PlaylistsController;
 use DateInterval;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
@@ -11,7 +13,7 @@ use Illuminate\Http\Request;
 
 class UsuariosController extends Controller
 {
-    private function verifyLoggedIn($redirect) {
+    private static function verifyLoggedIn($redirect) {
         if(Session::get('login') == null) {
             return view($redirect);
         } else {
@@ -23,12 +25,12 @@ class UsuariosController extends Controller
         return $this->verifyLoggedIn('user.login');
     }
 
-    public function signup()
+    public static function signup()
     {
-        return $this->verifyLoggedIn('user.signup');
+        return UsuariosController::verifyLoggedIn('user.signup');
     }
 
-    public function create_new_usuario(Request $request)
+    public static function create_new_usuario(Request $request)
     {
         $nome = $request->input('nome');
         $cpf = $request->input('cpf');
@@ -56,7 +58,7 @@ class UsuariosController extends Controller
         return redirect('/login')->with('success','Registered Successfully!');
     }
 
-    public function login_action(Request $request)
+    public static function login_action(Request $request)
     {
         $nome = $request->input('nome');
         $senha = $request->input('senha');
@@ -72,11 +74,59 @@ class UsuariosController extends Controller
             return redirect('/playlists');
         }
     }
-    public function logout_action()
+    public static function logout_action()
     {
         Session::forget('login');
         return redirect('/');
     }
 
+    public static function show($user_id) {
+
+        $userSession = Session::get('login');
+        if($userSession == null) {
+            return redirect('/');
+        }
+
+        $usuario = DB::table('usuarios')->where('id', $user_id)->first();
+
+        if($usuario == null) {
+            return redirect('/')->with('error','usuario não existe!');
+        }
+
+        $nAlbums = DB::table('albums')->where('id_usuario','=',$user_id)->get()->count();
+        $nPlaylists = DB::table('playlists')->where('id_usuario','=',$user_id)->get()->count();
+        $nMusicas = DB::table('tem_autoria')->where('id_usuario','=',$user_id)->get()->count();
+        return view('user.userDetails',compact('usuario','nAlbums','nPlaylists','nMusicas'));
+    }
+
+    public static function delete(Request $request) {
+        $userSession = Session::get('login');
+        $user_id = $request->usuario;
+
+        if($user_id != $userSession) {
+            return redirect('/')->with('error', 'você não está logado como esse usuário!');
+        }
+        DB::transaction(function () use ($user_id) {
+            $playlists = DB::table('playlists')->where('id_usuario','=',$user_id)->get();
+            foreach ($playlists as $playlist) {
+                $request = new Request();
+                $request->merge(['playlist' => $playlist->id]);
+                PlaylistsController::delete($request);
+            }
+            $albums = DB::table('albums')->where('id_usuario','=',$user_id)->get();
+            foreach ($albums as $album) {
+                $request = new Request();
+                $request->merge(['album' => $album->id]);
+                AlbumsController::delete($album->id);
+            }
+            DB::table('tem_autoria')->where('id_usuario','=',$user_id)->delete();
+            DB::table('curte_albums')->where('id_usuario','=',$user_id)->delete();
+            DB::table('curte_playlists')->where('id_usuario','=',$user_id)->delete();
+            DB::table('curte_musicas')->where('id_usuario','=',$user_id)->delete();
+            DB::table('usuarios')->where('id','=',$user_id)->delete();
+        });
+        UsuariosController::logout_action();
+        return redirect('/');
+    }
 
 }

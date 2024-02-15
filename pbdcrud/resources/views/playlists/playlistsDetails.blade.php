@@ -28,8 +28,7 @@
 <ul class="collection">
     <li class="collection-item">Duração: {{ $playlist->duracao_total }}</li>
     <li class="collection-item">Descrição: {{ $playlist->descricao }}</li>
-    <li class="collection-item">Dono:{{ DB::table('usuarios')->where('id', '=', $playlist->id_usuario)->first()->nome }}
-    </li>
+    <li class="collection-item">Dono: <a href="{{url('/users/details/'.$playlist->id_usuario)}}">{{ DB::table('usuarios')->where('id', '=', $playlist->id_usuario)->first()->nome }}</a></li>
 </ul>
 <table>
     <thead>
@@ -57,9 +56,10 @@
                         ->get();
                     $autoresString = '';
                     foreach ($autores as $autor) {
-                        $autoresString = $autoresString.$autor->nome.',';
+                        $autores = '<a href="'.url('/users/details/'.$autor->id).'">'.$autor->nome.'</a>, ';
+                        $autoresString .= $autores;
                     }
-                    $autoresString = substr($autoresString, 0, -1);
+                    $autoresString = substr($autoresString, 0, -2);
                     echo $autoresString
                 ?>
             </td>

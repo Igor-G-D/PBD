@@ -27,7 +27,7 @@
 </div>
 <ul class="collection">
     <li class="collection-item">Duração: {{ $album->duracao_total }}</li>
-    <li class="collection-item">Autor:{{ DB::table('usuarios')->where('id', '=', $album->id_usuario)->first()->nome }}
+    <li class="collection-item">Autor: <a href="{{url('/users/details/'.$album->id_usuario)}}">{{ DB::table('usuarios')->where('id', '=', $album->id_usuario)->first()->nome }}</a>
     </li>
 </ul>
 <table>
@@ -56,9 +56,10 @@
                         ->get();
                     $autoresString = '';
                     foreach ($autores as $autor) {
-                        $autoresString = $autoresString.$autor->nome.',';
+                        $autores = '<a href="'.url('/users/details/'.$autor->id).'">'.$autor->nome.'</a>, ';
+                        $autoresString .= $autores;
                     }
-                    $autoresString = substr($autoresString, 0, -1);
+                    $autoresString = substr($autoresString, 0, -2);
                     echo $autoresString
                 ?>
             </td>
