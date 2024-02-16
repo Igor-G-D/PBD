@@ -43,9 +43,9 @@
             @endforeach
             </tbody>
         </table>
-        <button class="btn waves-effect waves-light" name="action">
+        <a href="{{url('/playlists/create')}}" class="btn">
             <i class="material-icons right">add</i> Adicionar Playlist
-        </button>
+        </a>
     </div>
     <div id="userLiked" class="col s12">
         <table>

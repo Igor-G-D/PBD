@@ -41,7 +41,11 @@ Route::post('/playlists/delete',[PlaylistsController::class,'delete'])->name('pl
 Route::post('/playlists/unlike',[PlaylistsController::class,'unlike'])->name('playlists.unlike');
 Route::post('/playlists/like',[PlaylistsController::class,'like'])->name('playlists.like');
 Route::get('/playlists/details/{playlist_id}', [PlaylistsController::class,'details'])->name('playlists.details');
+Route::get('/playlists/create', [PlaylistsController::class,'createForm'])->name('playlists.createForm');
+Route::post('/playlists/create', [PlaylistsController::class,'create'])->name('playlists.create');
 Route::get('/playlists/details/{playlist_id}/edit', [PlaylistsController::class,'edit'])->name('playlists.edit');
+Route::post('/playlists/details/update', [PlaylistsController::class,'update'])->name('playlists.update');
+Route::post('/playlists/details/{playlist_id}/edit/removeMusica', [PlaylistsController::class,'removeMusic'])->name('playlists.update');
 
 Route::get('/albums', [AlbumsController::class,'show'])->name('albums.show');
 Route::post('/albums/delete',[AlbumsController::class,'delete'])->name('albums.delete');

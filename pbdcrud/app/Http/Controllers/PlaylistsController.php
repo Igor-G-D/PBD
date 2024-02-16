@@ -83,6 +83,58 @@ class PlaylistsController extends Controller
         return view('playlists.playlistsDetails',compact('playlist', 'musicas'));
     }
 
+    public static function create(Request $request) {
+        $playlist = new playlists();
 
+        $playlist->id_usuario = Session::get('login');
+        $playlist->nome = $request->nome;
+        $playlist->descricao = $request->descricao;
+        $playlist->duracao = DateInterval::createFromDateString('0 seconds')->format('%H:%I:%S');
 
+        if($request->has('privado')) {
+            $playlist->indicador_privado = true;
+        } else {
+            $playlist->indicador_privado = false;
+        }
+
+        $playlist->save();
+
+        return redirect('/playlists');
+
+    }
+    public static function createForm(Request $request)
+    {
+        return view("playlists.playlistsCreate");
+    }
+
+    public static function update(Request $request) {
+
+        $indicador_privado = false;
+        if($request->has('privado')) {
+            $indicador_privado = true;
+        }
+
+        DB::table("playlists")->where("id",'=', $request->playlist_id)->update(['nome' => $request->nome, 'descricao' => $request->descricao, 'indicador_privado' => $indicador_privado]);
+
+        return redirect('/playlists/details/'. $request->playlist_id);
+    }
+    public static function edit($playlist_id) {
+        $playlist = DB::table('playlists')->where('id', '=', $playlist_id)->get()->first();
+        $musicas = DB::table('musicas')
+        ->leftJoin('playlist_possui_musicas', 'musicas.id', '=', 'playlist_possui_musicas.id_musica')
+        ->where('playlist_possui_musicas.id_playlist', '=', $playlist_id)
+        ->select('musicas.*')
+        ->get();
+
+        return view('playlists.playlistsEdit', compact('playlist','musicas'));
+    }
+
+    public static function removeMusic(Request $request) {
+        $musica = $request->musica;
+        $playlist = $request->playlist;
+
+        DB::table('playlist_possui_musicas')->where('id_playlist','=',$playlist)->where('id_musica','=', $musica)->delete();
+
+        return redirect('/playlists/details/'.$playlist.'/edit');
+    }
 }

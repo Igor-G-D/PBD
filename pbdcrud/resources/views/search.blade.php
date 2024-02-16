@@ -7,7 +7,7 @@
             <div class="input-field col s6 offset-s3">
                 <i class="material-icons prefix">search</i>
                 <input placeholder="Search" name="nome" id="mainNome" type="text">
-                <label for="name">Search</label>
+                <label for="name">Nome</label>
             </div>
             <a class='dropdown-trigger btn-floating dropFilters' data-target='dropdownFilters'><i class="material-icons">filter_list</i></a>
             <a class='dropdown-trigger btn-floating dropOrder' data-target='dropdownOrder'><i class="material-icons">swap_vert</i></a>
