@@ -17,6 +17,46 @@ $(document).ready(function() {
 
     $('select').formSelect();
 
+    $('.add-playlist-button').on('click', function () {
+        var button = $(this);
+        var icon = button.find('.material-icons');
+        var musica = button.data('musica');
+        var playlist = button.data('playlist')
+        var type = "musicas";
+        var action = '';
+
+        // Toggle between "favorite_border" and "favorite" icons
+        if (icon.text().includes('add')) {
+            action = 'add';
+            icon.text('remove');
+        } else {
+            action = 'remove'
+            icon.text('add');
+        }
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        // AJAX request to submit data
+        $.ajax({
+            type: 'POST',
+            url: '/playlists/details/'+playlist+'/edit/'+action, // Replace with your actual route
+            data: {
+                musica: musica,
+                playlist: playlist
+            },
+            success: function (response) {
+                console.log(response); // Handle the response from the server
+            },
+            error: function (error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+
     $('.favorite-button').on('click', function () {
         var button = $(this);
         var icon = button.find('.material-icons');

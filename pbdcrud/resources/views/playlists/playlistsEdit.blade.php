@@ -72,7 +72,7 @@
                 </td>
                 <td>{{DB::table('curte_musicas')->where('curte_musicas.id_musica', '=', $musica->id)->get()->count()}}</td>
                 <td class="right">
-                    <form action="{{ url('/playlists/details/'.$playlist->id.'/edit/removeMusica') }}" method="POST">
+                    <form action="{{ url('/playlists/details/'.$playlist->id.'/edit/removeAndUpdate') }}" method="POST">
                         @csrf
                         <input type="hidden" name="playlist" value="{{ $playlist->id }}">
                         <input type="hidden" name="musica" value="{{ $musica->id }}">
@@ -85,5 +85,6 @@
         @endforeach
     </tbody>
 </table>
+<a class="btn" href="{{url('/playlists/details/'.$playlist->id.'/edit/add')}}">Adicionar Músicas</a>
 
 @include('footer')

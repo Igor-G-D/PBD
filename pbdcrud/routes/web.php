@@ -44,8 +44,11 @@ Route::get('/playlists/details/{playlist_id}', [PlaylistsController::class,'deta
 Route::get('/playlists/create', [PlaylistsController::class,'createForm'])->name('playlists.createForm');
 Route::post('/playlists/create', [PlaylistsController::class,'create'])->name('playlists.create');
 Route::get('/playlists/details/{playlist_id}/edit', [PlaylistsController::class,'edit'])->name('playlists.edit');
+Route::get('/playlists/details/{playlist_id}/edit/add', [PlaylistsController::class,'addMusicaForm'])->name('playlists.edit.add');
+Route::post('/playlists/details/{playlist_id}/edit/add', [PlaylistsController::class,'addMusica'])->name('playlists.edit.add');
+Route::post('/playlists/details/{playlist_id}/edit/remove', [PlaylistsController::class,'removeMusica'])->name('playlists.edit.add');
 Route::post('/playlists/details/update', [PlaylistsController::class,'update'])->name('playlists.update');
-Route::post('/playlists/details/{playlist_id}/edit/removeMusica', [PlaylistsController::class,'removeMusic'])->name('playlists.update');
+Route::post('/playlists/details/{playlist_id}/edit/removeAndUpdate', [PlaylistsController::class,'removeAndUpdate'])->name('playlists.removeAndUpdate');
 
 Route::get('/albums', [AlbumsController::class,'show'])->name('albums.show');
 Route::post('/albums/delete',[AlbumsController::class,'delete'])->name('albums.delete');

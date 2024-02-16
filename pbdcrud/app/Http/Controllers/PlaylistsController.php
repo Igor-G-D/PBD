@@ -129,12 +129,39 @@ class PlaylistsController extends Controller
         return view('playlists.playlistsEdit', compact('playlist','musicas'));
     }
 
-    public static function removeMusic(Request $request) {
+    public static function addMusica(Request $request) {
+        $musica = $request->musica;
+        $playlist = $request->playlist;
+
+        DB::table('playlist_possui_musicas')->insert([
+            'id_playlist' => $playlist,
+            'id_musica' => $musica,
+        ]);
+    }
+
+    public static function removeMusica(Request $request) {
+        $musica = $request->musica;
+        $playlist = $request->playlist;
+
+        DB::table('playlist_possui_musicas')
+            ->where('id_playlist','=',$playlist)
+            ->where('id_musica','=', $musica)
+            ->delete();
+    }
+
+    public static function removeAndUpdate(Request $request) {
         $musica = $request->musica;
         $playlist = $request->playlist;
 
         DB::table('playlist_possui_musicas')->where('id_playlist','=',$playlist)->where('id_musica','=', $musica)->delete();
 
         return redirect('/playlists/details/'.$playlist.'/edit');
+    }
+
+    public static function addMusicaForm($id_playlist){
+        $musicas = DB::table('musicas')->get();
+        $playlist = $id_playlist;
+
+        return view('playlists.playlistsAddMusic',compact('musicas','playlist'));
     }
 }
