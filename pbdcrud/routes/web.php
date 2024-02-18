@@ -56,6 +56,10 @@ Route::post('/albums/unlike',[AlbumsController::class,'unlike'])->name('albums.u
 Route::post('/albums/like',[AlbumsController::class,'like'])->name('albums.like');
 Route::get('/albums/details/{album_id}', [AlbumsController::class,'details'])->name('albums.details');
 Route::get('/albums/details/{album_id}/edit', [AlbumsController::class,'edit'])->name('albums.details');
+Route::get('/albums/create', [AlbumsController::class,'createForm'])->name('albums.createForm');
+Route::post('/albums/create', [AlbumsController::class,'create'])->name('albums.create');
+Route::get('/albums/{album_id}/music', [AlbumsController::class,'musicForm'])->name('albums.music');
+
 
 Route::post('/musicas/unlike',[MusicasController::class,'unlike'])->name('musicas.unlike');
 Route::post('/musicas/like',[MusicasController::class,'like'])->name('musicas.like');

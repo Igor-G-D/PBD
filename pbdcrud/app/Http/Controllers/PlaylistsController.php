@@ -100,7 +100,6 @@ class PlaylistsController extends Controller
         $playlist->save();
 
         return redirect('/playlists');
-
     }
     public static function createForm(Request $request)
     {

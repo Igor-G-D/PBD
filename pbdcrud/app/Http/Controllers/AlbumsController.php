@@ -90,6 +90,28 @@ class AlbumsController extends Controller
         return view('albums.albumsDetails',compact('album', 'musicas'));
     }
 
+    public static function createForm(Request $request)
+    {
+        return view("albums.albumsCreate");
+    }
 
+    public static function create(Request $request) {
+        $album = new albums();
+
+        $album->id_usuario = Session::get('login');
+        $album->nome = $request->nome;
+        $album->duracao = DateInterval::createFromDateString('0 seconds')->format('%H:%I:%S');
+
+        $album->save();
+
+        return redirect('/albums/'.$album->id.'/music');
+    }
+
+    public static function musicForm($album_id) {
+        $musicas = DB::table('musicas')->where('id_album','=', $album_id)->get();
+        $nome = DB::table('albums')->where('id','=', $album_id)->first()->nome;
+
+        return view('albums.albumsMusic',compact('musicas','nome'));
+    }
 
 }
