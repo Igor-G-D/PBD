@@ -5,7 +5,7 @@
         <h5>{{ $album->nome }}</h5>
 
         @if ($album->id_usuario == Session::get('login'))
-            <a href="{{url('/albums/details/'.$album->id.'/edit')}}" class="btn-floating btn-large waves-effect waves-light cyan"><i class="material-icons">create</i></a>
+            <a href="{{url('/albums/edit/'.$album->id)}}" class="btn-floating btn-large waves-effect waves-light cyan"><i class="material-icons">create</i></a>
             <form action="{{ url('/albums/delete') }}" method="POST">
                 @csrf
                 <input type="hidden" name="album" value="{{ $album->id }}">

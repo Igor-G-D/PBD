@@ -171,4 +171,14 @@ class AlbumsController extends Controller
         return redirect('/albums');
     }
 
+    public static function editForm($album_id) {
+        $album = DB::table('albums')->where('id','=', $album_id)->first();
+
+        return view('albums.albumsEdit',compact('album'));
+    }
+
+    public static function edit($album_id, Request $request) {
+        DB::table("albums")->where("id",'=', $album_id)->update(['nome' => $request->nome]);
+        return redirect('/albums/'.$album_id.'/music');
+    }
 }

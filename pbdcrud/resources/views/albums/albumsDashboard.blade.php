@@ -30,7 +30,7 @@
                     <td><a href="{{url('/users/details/'.$album->id_usuario)}}">{{ DB::table('usuarios')->where('id','=',$album->id_usuario)->first()->nome }}</a></td>
                     <td>{{DB::table('curte_albums')->where('curte_albums.id_album', '=', $album->id)->get()->count()}}</td>
                     <td class="right valign-wrapper">
-                        <a href="{{url('/albums/details/'.$album->id.'/edit')}}" class="btn-floating btn-small waves-effect waves-light cyan"><i class="material-icons">create</i></a>
+                        <a href="{{url('/albums/edit/'.$album->id)}}" class="btn-floating btn-small waves-effect waves-light cyan"><i class="material-icons">create</i></a>
                         <form action="{{ url('/albums/delete') }}" method="POST">
                             @csrf
                             <input type="hidden" name="album" value="{{ $album->id }}">

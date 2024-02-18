@@ -55,7 +55,6 @@ Route::post('/albums/delete',[AlbumsController::class,'delete'])->name('albums.d
 Route::post('/albums/unlike',[AlbumsController::class,'unlike'])->name('albums.unlike');
 Route::post('/albums/like',[AlbumsController::class,'like'])->name('albums.like');
 Route::get('/albums/details/{album_id}', [AlbumsController::class,'details'])->name('albums.details');
-Route::get('/albums/details/{album_id}/edit', [AlbumsController::class,'edit'])->name('albums.details');
 Route::get('/albums/create', [AlbumsController::class,'createForm'])->name('albums.createForm');
 Route::post('/albums/create', [AlbumsController::class,'create'])->name('albums.create');
 Route::get('/albums/{album_id}/music', [AlbumsController::class,'musicForm'])->name('albums.music');
@@ -63,6 +62,8 @@ Route::get('/albums/{album_id}/music/new', [AlbumsController::class,'newMusicFor
 Route::post('/albums/{album_id}/music/new', [AlbumsController::class,'newMusic'])->name('album.music.new');
 Route::post('/albums/{album_id}/music/removeAndUpdate', [AlbumsController::class,'removeAndUpdate'])->name('album.music.removeAndUpdate');
 Route::get('/albums/{album_id}/music/confirm', [AlbumsController::class,'confirm'])->name('album.confirm');
+Route::get('/albums/edit/{album_id}', [AlbumsController::class,'editForm'])->name('albums.editForm');
+Route::post('/albums/edit/{album_id}', [AlbumsController::class,'edit'])->name('albums.edit');
 
 Route::post('/musicas/unlike',[MusicasController::class,'unlike'])->name('musicas.unlike');
 Route::post('/musicas/like',[MusicasController::class,'like'])->name('musicas.like');
