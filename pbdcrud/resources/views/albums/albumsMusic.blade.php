@@ -1,9 +1,8 @@
 @include('header')
-@include('navbar')
 <table>
     <thead>
         <tr>
-            <thead><h5>Músicas ao Album {{$nome}}</h5></thead>
+            <thead><h5>Músicas do Album {{$nome}}</h5></thead>
             <th>Nome da música</th>
             <th>Genero</th>
             <th>Duração</th>
@@ -35,12 +34,11 @@
                 </td>
                 <td>{{DB::table('curte_musicas')->where('curte_musicas.id_musica', '=', $musica->id)->get()->count()}}</td>
                 <td class="right">
-                    <form action="{{ url('/albums/music/removeAndUpdate') }}" method="POST">
+                    <form action="{{ url('/albums/'.$album_id.'/music/removeAndUpdate') }}" method="POST">
                         @csrf
-                        <input type="hidden" name="playlist" value="{{ $playlist->id }}">
                         <input type="hidden" name="musica" value="{{ $musica->id }}">
                         <button class="btn-floating btn-small red" type="submit">
-                            <i class="material-icons">remove</i>
+                            <i class="material-icons">delete</i>
                         </button>
                     </form>
                 </td>
@@ -48,7 +46,7 @@
         @endforeach
     </tbody>
 </table>
-<a class="btn" href="{{url('/albums/music/new')}}">Adicionar Música</a> <br>
-<a class="btn" href="{{url('/albums/music/finish')}}">Confirmar</a>
+<a class="btn" href="{{url('/albums/'.$album_id.'/music/new')}}">Adicionar Música</a> <br>
+<a class="btn" href="{{url('/albums/'.$album_id.'/music/confirm')}}">Confirmar</a>
 
 @include('footer')

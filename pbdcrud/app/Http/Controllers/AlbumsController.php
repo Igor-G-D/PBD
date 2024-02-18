@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\usuarios;
 use App\Models\albums;
 use App\Models\curte_albums;
+use App\Models\musicas;
 use DateInterval;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
@@ -111,7 +112,63 @@ class AlbumsController extends Controller
         $musicas = DB::table('musicas')->where('id_album','=', $album_id)->get();
         $nome = DB::table('albums')->where('id','=', $album_id)->first()->nome;
 
-        return view('albums.albumsMusic',compact('musicas','nome'));
+        return view('albums.albumsMusic',compact('musicas','nome', 'album_id'));
+    }
+
+    public static function newMusicForm($album_id) {
+        $nome = DB::table('albums')->where('id','=', $album_id)->first()->nome;
+
+        $usuarios = DB::table('usuarios')->where('id','!=', Session::get('login'))->get();
+        return view('albums.albumsMusicNew',compact('album_id', 'nome', 'usuarios'));
+    }
+
+    public static function newMusic($album_id, Request $request) {
+        $musica = new musicas();
+
+        $musica->id_album = $album_id;
+        $musica->nome = $request->nome;
+        $musica->genero = $request->genero;
+
+        $musica->duracao = DateInterval::createFromDateString($request->minutes.' minutes '.$request->seconds.' seconds')->format('%H:%I:%S');
+
+        DB::transaction(function () use ($musica, $request) {
+            $musica->save();
+
+            DB::table('tem_autoria')->insert([
+                'id_usuario' => Session::get('login'),
+                'id_musica' => $musica->id,
+            ]);
+
+            if($request->coauthor != "") {
+                DB::table('tem_autoria')->insert([
+                    'id_usuario' => $request->coauthor,
+                    'id_musica' => $musica->id,
+                ]);
+                //TODO: increase album duration when adding new song
+            }
+        });
+
+        return redirect('/albums/'.$album_id.'/music');
+
+    }
+
+    public static function removeAndUpdate($album_id, Request $request) {
+        DB::transaction(function () use ($request) {
+            DB::table('tem_autoria')->where('id_musica','=',$request->musica)->delete();
+            DB::table('musicas')->where('id','=',$request->musica)->delete();
+        });
+
+        return redirect('/albums/'.$album_id.'/music');
+        //TODO: update album duration
+    }
+
+    public static function confirm($album_id) {
+        $nMusicas = DB::table('musicas')->where('id_album','=', $album_id)->get()->count();
+        if($nMusicas == 0) {
+            DB::table('albums')->where('id','=',$album_id)->delete();
+        }
+
+        return redirect('/albums');
     }
 
 }

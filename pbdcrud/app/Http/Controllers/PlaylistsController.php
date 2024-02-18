@@ -135,6 +135,7 @@ class PlaylistsController extends Controller
         DB::table('playlist_possui_musicas')->insert([
             'id_playlist' => $playlist,
             'id_musica' => $musica,
+            //TODO: increase playlist duration
         ]);
     }
 
@@ -146,6 +147,7 @@ class PlaylistsController extends Controller
             ->where('id_playlist','=',$playlist)
             ->where('id_musica','=', $musica)
             ->delete();
+            //TODO: decrease playlist duration
     }
 
     public static function removeAndUpdate(Request $request) {
@@ -155,6 +157,7 @@ class PlaylistsController extends Controller
         DB::table('playlist_possui_musicas')->where('id_playlist','=',$playlist)->where('id_musica','=', $musica)->delete();
 
         return redirect('/playlists/details/'.$playlist.'/edit');
+        //TODO: decrease playlist duration
     }
 
     public static function addMusicaForm($id_playlist){
