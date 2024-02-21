@@ -37,7 +37,7 @@ class BuscaController extends Controller
         $searchResults = DB::table($type)->where('duracao', '<=', $duracaoInterval);
 
         if($nome != '') {
-            $searchResults->where('nome', 'like', '%' . $nome . '%');
+            $searchResults->where('nome', 'ilike', '%' . $nome . '%');
         }
 
         switch ($orderby) {

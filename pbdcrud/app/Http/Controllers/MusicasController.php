@@ -28,7 +28,7 @@ class MusicasController extends Controller
         $duracaoMusicaSeg = $Mhour * 3600 + $Mmin * 60 + $Mseg;
         $duracaoPlaylistSeg = $Phour * 3600 + $Pmin * 60 + $Pseg;
 
-        $novaDuracaoPlaylist = gmdate("H:i:s", $duracaoPlaylistSeg + $duracaoMusicaSeg);
+        $novaDuracaoPlaylist = gmdate("H:i:s", $duracaoPlaylistSeg - $duracaoMusicaSeg);
 
         DB::transaction(function () use ($musica_id, $session_id, $playlist_musicas_curtidas, $novaDuracaoPlaylist) {
             DB::table('curte_musicas')

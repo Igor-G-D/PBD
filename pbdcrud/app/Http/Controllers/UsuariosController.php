@@ -129,4 +129,22 @@ class UsuariosController extends Controller
         return redirect('/');
     }
 
+    public static function updateForm($usuario_id) {
+        $usuario = DB::table('usuarios')->where('id','=',$usuario_id)->first();
+        $distribuidores = DB::table('distribuidores')->get();
+
+        return view('user.userUpdate',compact('usuario', 'distribuidores'));
+    }
+
+    public static function update($usuario_id, Request $request) {
+        $nome = $request->input('nome');
+        $cpf = $request->input('cpf');
+        $senha = $request->input('senha');
+        $distribuidor = $request->input('distribuidor');
+
+        DB::table('usuarios')->where('id','=',$usuario_id)->update(['nome'=>$nome,'cpf'=>$cpf,'senha'=>$senha, 'id_distribuidor' =>$distribuidor]);
+
+        return redirect('/users/details/'. $usuario_id);
+    }
+
 }

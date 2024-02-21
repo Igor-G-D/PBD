@@ -44,10 +44,29 @@ class AlbumsController extends Controller
                 ->leftJoin('musicas', 'curte_musicas.id_musica', '=', 'musicas.id')
                 ->where('musicas.id_album', '=', $album_id)
                 ->delete();
+            $playlist_possui_musicas = DB::table('playlist_possui_musicas')
+                ->leftJoin('musicas', 'playlist_possui_musicas.id_musica', '=', 'musicas.id')
+                ->where('musicas.id_album', '=', $album_id)->get();
+
+            foreach($playlist_possui_musicas as $playlist_possui_musica) {
+                $musica = $playlist_possui_musica->id_musica;
+                $playlist = $playlist_possui_musica->id_playlist;
+                $duracaoPlaylistDB = DB::table('playlists')->where('id','=',$playlist)->first()->duracao;
+                $duracaoMusicaDB = DB::table('musicas')->where('id','=',$musica)->first()->duracao;
+                $Mseg = $Mmin =  $Mhour = $Pseg = $Pmin = $Phour = 0 ;
+                list($Mhour, $Mmin, $Mseg) = sscanf($duracaoMusicaDB,'%d:%d:%d');
+                list($Phour, $Pmin, $Pseg) = sscanf($duracaoPlaylistDB,'%d:%d:%d');
+                $duracaoMusicaSeg = $Mhour * 3600 + $Mmin * 60 + $Mseg;
+                $duracaoPlaylistSeg = $Phour * 3600 + $Pmin * 60 + $Pseg;
+
+                $novaDuracaoPlaylist = gmdate("H:i:s", $duracaoPlaylistSeg - $duracaoMusicaSeg);
+
+                DB::table('playlists')->where('id','=',$playlist)->update(['duracao' => $novaDuracaoPlaylist]);
+            }
             DB::table('playlist_possui_musicas')
                 ->leftJoin('musicas', 'playlist_possui_musicas.id_musica', '=', 'musicas.id')
-                ->where('musicas.id_album', '=', $album_id)
-                ->delete();
+                ->where('musicas.id_album', '=', $album_id)->delete();
+
             DB::table('tem_autoria')
                 ->leftJoin('musicas', 'tem_autoria.id_musica', '=', 'musicas.id')
                 ->where('musicas.id_album', '=', $album_id)

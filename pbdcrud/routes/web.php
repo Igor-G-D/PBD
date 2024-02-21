@@ -32,6 +32,8 @@ Route::post('/login', [UsuariosController::class,'login_action'])->name('user.lo
 Route::get('/signup', [UsuariosController::class,'signup'])->name('user.signup');
 Route::post('/signup', [UsuariosController::class,'create_new_usuario'])->name('user.create_new_usuario');
 Route::get('/logout', [UsuariosController::class,'logout_action'])->name('user.logoff');
+Route::get('/users/details/{usuario_id}/edit', [UsuariosController::class,'updateForm'])->name('user.updateForm');
+Route::post('/users/details/{usuario_id}/edit', [UsuariosController::class,'update'])->name('user.update');
 
 Route::get('/users/details/{users_id}', [UsuariosController::class,'show'])->name('users.details');
 Route::post('/users/delete',[UsuariosController::class,'delete'])->name('users.delete');
