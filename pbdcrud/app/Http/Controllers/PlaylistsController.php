@@ -131,33 +131,63 @@ class PlaylistsController extends Controller
     public static function addMusica(Request $request) {
         $musica = $request->musica;
         $playlist = $request->playlist;
+        $duracaoPlaylistDB = DB::table('playlists')->where('id','=',$playlist)->first()->duracao;
+        $duracaoMusicaDB = DB::table('musicas')->where('id','=',$musica)->first()->duracao;
+        $Mseg = $Mmin =  $Mhour = $Pseg = $Pmin = $Phour = 0 ;
+        list($Mhour, $Mmin, $Mseg) = sscanf($duracaoMusicaDB,'%d:%d:%d');
+        list($Phour, $Pmin, $Pseg) = sscanf($duracaoPlaylistDB,'%d:%d:%d');
+        $duracaoMusicaSeg = $Mhour * 3600 + $Mmin * 60 + $Mseg;
+        $duracaoPlaylistSeg = $Phour * 3600 + $Pmin * 60 + $Pseg;
+
+        $novaDuracaoPlaylist = gmdate("H:i:s", $duracaoPlaylistSeg + $duracaoMusicaSeg);
 
         DB::table('playlist_possui_musicas')->insert([
             'id_playlist' => $playlist,
             'id_musica' => $musica,
-            //TODO: increase playlist duration
         ]);
+
+        DB::table('playlists')->where('id','=',$playlist)->update(['duracao' => $novaDuracaoPlaylist]);
     }
 
     public static function removeMusica(Request $request) {
         $musica = $request->musica;
         $playlist = $request->playlist;
+        $duracaoPlaylistDB = DB::table('playlists')->where('id','=',$playlist)->first()->duracao;
+        $duracaoMusicaDB = DB::table('musicas')->where('id','=',$musica)->first()->duracao;
+        $Mseg = $Mmin =  $Mhour = $Pseg = $Pmin = $Phour = 0 ;
+        list($Mhour, $Mmin, $Mseg) = sscanf($duracaoMusicaDB,'%d:%d:%d');
+        list($Phour, $Pmin, $Pseg) = sscanf($duracaoPlaylistDB,'%d:%d:%d');
+        $duracaoMusicaSeg = $Mhour * 3600 + $Mmin * 60 + $Mseg;
+        $duracaoPlaylistSeg = $Phour * 3600 + $Pmin * 60 + $Pseg;
+
+        $novaDuracaoPlaylist = gmdate("H:i:s", $duracaoPlaylistSeg - $duracaoMusicaSeg);
 
         DB::table('playlist_possui_musicas')
             ->where('id_playlist','=',$playlist)
             ->where('id_musica','=', $musica)
             ->delete();
-            //TODO: decrease playlist duration
+
+        DB::table('playlists')->where('id','=',$playlist)->update(['duracao' => $novaDuracaoPlaylist]);
+
     }
 
     public static function removeAndUpdate(Request $request) {
         $musica = $request->musica;
         $playlist = $request->playlist;
+        $duracaoPlaylistDB = DB::table('playlists')->where('id','=',$playlist)->first()->duracao;
+        $duracaoMusicaDB = DB::table('musicas')->where('id','=',$musica)->first()->duracao;
+        $Mseg = $Mmin =  $Mhour = $Pseg = $Pmin = $Phour = 0 ;
+        list($Mhour, $Mmin, $Mseg) = sscanf($duracaoMusicaDB,'%d:%d:%d');
+        list($Phour, $Pmin, $Pseg) = sscanf($duracaoPlaylistDB,'%d:%d:%d');
+        $duracaoMusicaSeg = $Mhour * 3600 + $Mmin * 60 + $Mseg;
+        $duracaoPlaylistSeg = $Phour * 3600 + $Pmin * 60 + $Pseg;
+
+        $novaDuracaoPlaylist = gmdate("H:i:s", $duracaoPlaylistSeg - $duracaoMusicaSeg);
 
         DB::table('playlist_possui_musicas')->where('id_playlist','=',$playlist)->where('id_musica','=', $musica)->delete();
+        DB::table('playlists')->where('id','=',$playlist)->update(['duracao' => $novaDuracaoPlaylist]);
 
         return redirect('/playlists/details/'.$playlist.'/edit');
-        //TODO: decrease playlist duration
     }
 
     public static function addMusicaForm($id_playlist){

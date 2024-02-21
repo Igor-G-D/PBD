@@ -29,16 +29,18 @@
                     <td>{{ $playlist-> duracao }}</td>
                     <td><a href="{{url('/users/details/'.$playlist->id_usuario)}}">{{ DB::table('usuarios')->where('id','=',$playlist->id_usuario)->first()->nome }}</a></td>
                     <td>{{DB::table('curte_playlists')->where('curte_playlists.id_playlist', '=', $playlist->id)->get()->count()}}</td>
-                    <td class="right valign-wrapper">
-                        <a href="{{url('/playlists/details/'.$playlist->id.'/edit')}}" class="btn-floating btn-small waves-effect waves-light cyan"><i class="material-icons">create</i></a>
-                        <form action="{{ url('/playlists/delete') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="playlist" value="{{ $playlist->id }}">
-                            <button class="btn-floating btn-small red" type="submit">
-                                <i class="material-icons">delete</i>
-                            </button>
-                        </form>
-                    </td>
+                    @if ($playlist->nome != "Músicas Curtidas")
+                        <td class="right valign-wrapper">
+                            <a href="{{url('/playlists/details/'.$playlist->id.'/edit')}}" class="btn-floating btn-small waves-effect waves-light cyan"><i class="material-icons">create</i></a>
+                            <form action="{{ url('/playlists/delete') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="playlist" value="{{ $playlist->id }}">
+                                <button class="btn-floating btn-small red" type="submit">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </form>
+                        </td>
+                    @endif
                 </tr>
             @endforeach
             </tbody>

@@ -4,7 +4,7 @@
     <div class="col s12 valign-wrapper">
         <h5>{{ $playlist->nome }}</h5>
 
-        @if ($playlist->id_usuario == Session::get('login'))
+        @if ($playlist->id_usuario == Session::get('login') && $playlist->nome != "Músicas Curtidas")
             <a href="{{url('/playlists/details/'.$playlist->id.'/edit')}}" class="btn-floating btn-large waves-effect waves-light cyan"><i class="material-icons">create</i></a>
             <form action="{{ url('/playlists/delete') }}" method="POST">
                 @csrf
@@ -13,7 +13,7 @@
                     <i class="material-icons red">delete</i>
                 </button>
             </form>
-        @else
+        @elseif ($playlist->nome != "Músicas Curtidas")
             <form action="{{ url('/playlists/unlike') }}" method="POST">
                 @csrf
                 <input type="hidden" name="playlist" value="{{ $playlist->id }}">

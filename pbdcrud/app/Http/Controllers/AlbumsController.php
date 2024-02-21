@@ -131,7 +131,17 @@ class AlbumsController extends Controller
 
         $musica->duracao = DateInterval::createFromDateString($request->minutes.' minutes '.$request->seconds.' seconds')->format('%H:%I:%S');
 
-        DB::transaction(function () use ($musica, $request) {
+        $duracaoAlbumDB = DB::table('albums')->where('id','=',$album_id)->first()->duracao;
+        $duracaoMusicaDB = $musica->duracao;
+        $Mseg = $Mmin =  $Mhour = $Aseg = $Amin = $Ahour = 0 ;
+        list($Mhour, $Mmin, $Mseg) = sscanf($duracaoMusicaDB,'%d:%d:%d');
+        list($Ahour, $Amin, $Aseg) = sscanf($duracaoAlbumDB,'%d:%d:%d');
+        $duracaoMusicaSeg = $Mhour * 3600 + $Mmin * 60 + $Mseg;
+        $duracaoAlbumSeg = $Ahour * 3600 + $Amin * 60 + $Aseg;
+
+        $novaDuracaoAlbum = gmdate("H:i:s", $duracaoAlbumSeg + $duracaoMusicaSeg);
+
+        DB::transaction(function () use ($musica, $request, $novaDuracaoAlbum, $album_id) {
             $musica->save();
 
             DB::table('tem_autoria')->insert([
@@ -144,8 +154,9 @@ class AlbumsController extends Controller
                     'id_usuario' => $request->coauthor,
                     'id_musica' => $musica->id,
                 ]);
-                //TODO: increase album duration when adding new song
             }
+
+            DB::table('albums')->where('id','=',$album_id)->update(['duracao' => $novaDuracaoAlbum]);
         });
 
         return redirect('/albums/'.$album_id.'/music');
@@ -153,13 +164,25 @@ class AlbumsController extends Controller
     }
 
     public static function removeAndUpdate($album_id, Request $request) {
-        DB::transaction(function () use ($request) {
+
+        $duracaoAlbumDB = DB::table('albums')->where('id','=',$album_id)->first()->duracao;
+        $duracaoMusicaDB = DB::table('musicas')->where('id','=',$request->musica)->first()->duracao;
+        $Mseg = $Mmin =  $Mhour = $Aseg = $Amin = $Ahour = 0 ;
+        list($Mhour, $Mmin, $Mseg) = sscanf($duracaoMusicaDB,'%d:%d:%d');
+        list($Ahour, $Amin, $Aseg) = sscanf($duracaoAlbumDB,'%d:%d:%d');
+        $duracaoMusicaSeg = $Mhour * 3600 + $Mmin * 60 + $Mseg;
+        $duracaoAlbumSeg = $Ahour * 3600 + $Amin * 60 + $Aseg;
+
+        $novaDuracaoAlbum = gmdate("H:i:s", $duracaoAlbumSeg - $duracaoMusicaSeg);
+
+        DB::transaction(function () use ($request, $album_id, $novaDuracaoAlbum) {
             DB::table('tem_autoria')->where('id_musica','=',$request->musica)->delete();
             DB::table('musicas')->where('id','=',$request->musica)->delete();
+
+            DB::table('albums')->where('id','=',$album_id)->update(['duracao' => $novaDuracaoAlbum]);
         });
 
         return redirect('/albums/'.$album_id.'/music');
-        //TODO: update album duration
     }
 
     public static function confirm($album_id) {
