@@ -201,7 +201,7 @@
                         <td><a href="{{url('/users/details/'.$album->id_usuario)}}">{{ DB::table('usuarios')->where('id','=',$album->id_usuario)->first()->nome }}</a></td>
                         <td>{{DB::table('curte_albums')->where('curte_albums.id_album', '=', $album->id)->get()->count()}}</td>
                         <td class="right">
-                            <a class="btn-floating btn-small waves-effect waves-light red favorite-button" data-number="{{$album->id}}" data-type="album">
+                            <a class="btn-floating btn-small waves-effect waves-light red favorite-button" data-number="{{$album->id}}" data-type="albums">
                                 <i class="material-icons">
                                     <?php
                                         $liked = DB::table('curte_albums')->where('id_usuario','=',Session::get('login'))->where('id_album','=',$album->id)->count();

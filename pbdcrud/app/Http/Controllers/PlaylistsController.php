@@ -19,7 +19,7 @@ class PlaylistsController extends Controller
             return redirect('/');
         }
 
-        $userPlaylists = DB::table('playlists')->where('id_usuario', $userSession)->get();
+        $userPlaylists = DB::table('playlists')->where('id_usuario','=', $userSession)->get();
         $likedPlaylists = DB::table('playlists')
         ->join('curte_playlists', 'playlists.id', '=', 'curte_playlists.id_playlist')
         ->where('curte_playlists.id_usuario', '=', $userSession)

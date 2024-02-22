@@ -117,7 +117,7 @@ class UsuariosController extends Controller
             foreach ($albums as $album) {
                 $request = new Request();
                 $request->merge(['album' => $album->id]);
-                AlbumsController::delete($album->id);
+                AlbumsController::delete($request);
             }
             DB::table('tem_autoria')->where('id_usuario','=',$user_id)->delete();
             DB::table('curte_albums')->where('id_usuario','=',$user_id)->delete();
